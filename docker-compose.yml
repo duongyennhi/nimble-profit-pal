@@ -1,0 +1,21 @@
+version: "3.9"
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: revenue_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: revenue_management
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: app123
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./db/init:/docker-entrypoint-initdb.d
+    command: --default-authentication-plugin=mysql_native_password
+
+volumes:
+  mysql_data:
