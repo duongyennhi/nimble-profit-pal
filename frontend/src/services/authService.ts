@@ -13,7 +13,7 @@ export interface LoginResponse {
 }
 
 export const loginApi = async (username: string, password: string): Promise<LoginResponse> => {
-  const response = await fetch(`${API_URL}/auth/login`, {
+  const response = await fetch(`${API_BASE_URL}/auth/login`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -30,7 +30,7 @@ export const loginApi = async (username: string, password: string): Promise<Logi
 };
 
 export const getMeApi = async (token: string) => {
-  const response = await fetch(`${API_URL}/auth/me`, {
+  const response = await fetch(`${API_BASE_URL}/auth/me`, {
     method: 'GET',
     headers: {
       'Authorization': `Bearer ${token}`,
