@@ -31,7 +31,7 @@ const getAuthHeaders = () => {
 };
 
 export const getProductsApi = async (): Promise<GetProductsResponse> => {
-  const response = await fetch(`${API_URL}/products`, {
+  const response = await fetch(`${API_BASE_URL}/products`, {
     method: 'GET',
     headers: getAuthHeaders(),
   });
@@ -45,7 +45,7 @@ export const getProductsApi = async (): Promise<GetProductsResponse> => {
 };
 
 export const createProductApi = async (data: Omit<ProductApiItem, 'id' | 'stock_quantity' | 'category_name'>): Promise<{ message: string; id: number }> => {
-  const response = await fetch(`${API_URL}/products`, {
+  const response = await fetch(`${API_BASE_URL}/products`, {
     method: 'POST',
     headers: getAuthHeaders(),
     body: JSON.stringify(data),
@@ -63,7 +63,7 @@ export const updateProductApi = async (
   id: number,
   data: Omit<ProductApiItem, 'id' | 'stock_quantity' | 'category_name'>
 ): Promise<{ message: string }> => {
-  const response = await fetch(`${API_URL}/products/${id}`, {
+  const response = await fetch(`${API_BASE_URL}/products/${id}`, {
     method: 'PUT',
     headers: getAuthHeaders(),
     body: JSON.stringify(data),
@@ -81,7 +81,7 @@ export const updateProductStatusApi = async (
   id: number,
   status: 'active' | 'inactive'
 ): Promise<{ message: string }> => {
-  const response = await fetch(`${API_URL}/products/${id}/status`, {
+  const response = await fetch(`${API_BASE_URL}/products/${id}/status`, {
     method: 'PATCH',
     headers: getAuthHeaders(),
     body: JSON.stringify({ status }),
@@ -96,7 +96,7 @@ export const updateProductStatusApi = async (
 };
 
 export const deleteProductApi = async (id: number): Promise<{ message: string }> => {
-  const response = await fetch(`${API_URL}/products/${id}`, {
+  const response = await fetch(`${API_BASE_URL}/products/${id}`, {
     method: 'DELETE',
     headers: getAuthHeaders(),
   });
