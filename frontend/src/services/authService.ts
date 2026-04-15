@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+import { API_BASE_URL } from "@/lib/api";
 
 export interface LoginResponse {
   message: string;
@@ -12,18 +12,21 @@ export interface LoginResponse {
   };
 }
 
-export const loginApi = async (username: string, password: string): Promise<LoginResponse> => {
+export const loginApi = async (
+  username: string,
+  password: string
+): Promise<LoginResponse> => {
   const response = await fetch(`${API_BASE_URL}/auth/login`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({ username, password }),
   });
 
   if (!response.ok) {
     const error = await response.json();
-    throw new Error(error.message || 'Đăng nhập thất bại');
+    throw new Error(error.message || "Đăng nhập thất bại");
   }
 
   return response.json();
@@ -31,15 +34,15 @@ export const loginApi = async (username: string, password: string): Promise<Logi
 
 export const getMeApi = async (token: string) => {
   const response = await fetch(`${API_BASE_URL}/auth/me`, {
-    method: 'GET',
+    method: "GET",
     headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
     },
   });
 
   if (!response.ok) {
-    throw new Error('Không thể lấy thông tin người dùng');
+    throw new Error("Không thể lấy thông tin người dùng");
   }
 
   return response.json();
