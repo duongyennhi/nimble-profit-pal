@@ -20,7 +20,7 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 const AppRoutes = () => {
-  const { user, isLoading } = useAuth();
+  const { isLoading } = useAuth();
 
   if (isLoading) {
     return (
@@ -47,8 +47,22 @@ const AppRoutes = () => {
                 <Route path="/purchases" element={<PurchasesPage />} />
                 <Route path="/sales" element={<SalesPage />} />
                 <Route path="/invoices" element={<InvoicesPage />} />
-                <Route path="/reports" element={<ProtectedRoute requiredRole="admin"><ReportsPage /></ProtectedRoute>} />
-                <Route path="/users" element={<ProtectedRoute requiredRole="admin"><UsersPage /></ProtectedRoute>} />
+                <Route
+                  path="/reports"
+                  element={
+                    <ProtectedRoute requiredRole="admin">
+                      <ReportsPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/users"
+                  element={
+                    <ProtectedRoute requiredRole="admin">
+                      <UsersPage />
+                    </ProtectedRoute>
+                  }
+                />
                 <Route path="/settings" element={<SettingsPage />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
