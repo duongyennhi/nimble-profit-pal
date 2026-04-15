@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:5010/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export interface ProductApiItem {
   id: number;
