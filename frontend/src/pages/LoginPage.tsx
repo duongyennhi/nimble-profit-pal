@@ -1,8 +1,16 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Eye, EyeOff, Lock, User2 } from 'lucide-react';
+
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { loginApi } from '@/services/authService';
@@ -12,6 +20,8 @@ const LoginPage: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
   const navigate = useNavigate();
   const { setAuthUser } = useAuth();
 
@@ -29,7 +39,8 @@ const LoginPage: React.FC = () => {
       toast.success('Đăng nhập thành công!');
       navigate('/dashboard');
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Đăng nhập thất bại';
+      const message =
+        error instanceof Error ? error.message : 'Đăng nhập thất bại';
       toast.error(message);
     } finally {
       setLoading(false);
@@ -37,51 +48,113 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <div className="text-4xl mb-2">💰</div>
-          <CardTitle className="text-2xl">Quản Lý Doanh Thu</CardTitle>
-          <CardDescription>Đăng nhập để tiếp tục</CardDescription>
-        </CardHeader>
-
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="username">Tên đăng nhập</Label>
-              <Input
-                id="username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-              />
+    <div className="min-h-screen bg-slate-100 flex items-center justify-center px-4 py-10">
+      <div className="w-full max-w-5xl grid grid-cols-1 overflow-hidden rounded-3xl bg-white shadow-2xl lg:grid-cols-2">
+        <div className="hidden lg:flex flex-col justify-between bg-gradient-to-br from-slate-900 via-slate-800 to-blue-900 p-10 text-white">
+          <div>
+            <div className="mb-6 flex items-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 text-2xl">
+                💰
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold">Quản Lý Doanh Thu</h1>
+                <p className="text-sm text-white/70">
+                  Hệ thống quản lý bán hàng và doanh thu
+                </p>
+              </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="password">Mật khẩu</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Nhập mật khẩu"
-                required
-              />
+            <div className="mt-10 space-y-4">
+              <h2 className="text-3xl font-bold leading-tight">
+                Theo dõi doanh thu, nhập hàng và hóa đơn trong một nơi
+              </h2>
+              <p className="max-w-md text-base text-white/75">
+                Giúp quản lý bán hàng nhanh hơn, kiểm soát tồn kho tốt hơn và
+                theo dõi báo cáo trực quan hơn mỗi ngày.
+              </p>
             </div>
-
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
-            </Button>
-          </form>
-
-          <div className="mt-4 rounded-md bg-muted p-3 text-xs text-muted-foreground">
-            <p className="mb-1 font-medium">Tài khoản demo:</p>
-            <p><strong>admin</strong> — Quản trị</p>
-            <p><strong>staff1</strong> — Nhân viên</p>
-            <p>Mật khẩu: dùng mật khẩu thật trong database</p>
           </div>
-        </CardContent>
-      </Card>
+
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-5 text-sm text-white/75">
+            Đăng nhập để truy cập bảng điều khiển, quản lý sản phẩm, hóa đơn và
+            báo cáo hệ thống.
+          </div>
+        </div>
+
+        <div className="flex items-center justify-center bg-white p-6 sm:p-10">
+          <Card className="w-full max-w-md border-0 shadow-none">
+            <CardHeader className="space-y-3 text-center">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50 text-3xl shadow-sm">
+                💰
+              </div>
+              <CardTitle className="text-3xl font-bold text-slate-900">
+                Đăng nhập
+              </CardTitle>
+              <CardDescription className="text-base text-slate-500">
+                Vui lòng nhập tài khoản để tiếp tục
+              </CardDescription>
+            </CardHeader>
+
+            <CardContent>
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div className="space-y-2">
+                  <Label htmlFor="username" className="text-slate-700">
+                    Tên đăng nhập
+                  </Label>
+                  <div className="relative">
+                    <User2 className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                    <Input
+                      id="username"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      placeholder="Nhập tên đăng nhập"
+                      className="h-12 rounded-xl border-slate-200 pl-10"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="password" className="text-slate-700">
+                    Mật khẩu
+                  </Label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                    <Input
+                      id="password"
+                      type={showPassword ? 'text' : 'password'}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="Nhập mật khẩu"
+                      className="h-12 rounded-xl border-slate-200 pl-10 pr-12"
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword((prev) => !prev)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-slate-600"
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                <Button
+                  type="submit"
+                  className="h-12 w-full rounded-xl text-base font-semibold"
+                  disabled={loading}
+                >
+                  {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     </div>
   );
 };
