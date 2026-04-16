@@ -66,11 +66,10 @@ const LoginPage: React.FC = () => {
 
             <div className="mt-10 space-y-4">
               <h2 className="text-3xl font-bold leading-tight">
-                Theo dõi doanh thu, nhập hàng và hóa đơn trong một nơi
+                QUÁN ĂN GIA ĐÌNH ABC
               </h2>
               <p className="max-w-md text-base text-white/75">
-                Giúp quản lý bán hàng nhanh hơn, kiểm soát tồn kho tốt hơn và
-                theo dõi báo cáo trực quan hơn mỗi ngày.
+                Khách hàng là trung tâm của chúng tôi. Chúng tôi cam kết mang đến trải nghiệm ẩm thực tuyệt vời và dịch vụ tận tâm cho mọi thành viên trong gia đình bạn.
               </p>
             </div>
           </div>
