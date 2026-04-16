@@ -18,9 +18,8 @@ import SettingsPage from "./pages/SettingsPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
-
 const AppRoutes = () => {
-  const { isLoading } = useAuth();
+  const { isLoading, user } = useAuth();
 
   if (isLoading) {
     return (
@@ -35,44 +34,106 @@ const AppRoutes = () => {
 
   return (
     <Routes>
-      <Route path="/login" element={<LoginPage />} />
       <Route
-        path="/*"
+        path="/"
+        element={<Navigate to={user ? "/dashboard" : "/login"} replace />}
+      />
+
+      <Route path="/login" element={<LoginPage />} />
+
+      <Route
+        path="/dashboard"
         element={
           <ProtectedRoute>
             <AppLayout>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/products" element={<ProductsPage />} />
-                <Route path="/purchases" element={<PurchasesPage />} />
-                <Route path="/sales" element={<SalesPage />} />
-                <Route path="/invoices" element={<InvoicesPage />} />
-                <Route
-                  path="/reports"
-                  element={
-                    <ProtectedRoute requiredRole="admin">
-                      <ReportsPage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/users"
-                  element={
-                    <ProtectedRoute requiredRole="admin">
-                      <UsersPage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route path="/settings" element={<SettingsPage />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
+              <Index />
             </AppLayout>
           </ProtectedRoute>
         }
       />
+
+      <Route
+        path="/products"
+        element={
+          <ProtectedRoute>
+            <AppLayout>
+              <ProductsPage />
+            </AppLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/purchases"
+        element={
+          <ProtectedRoute>
+            <AppLayout>
+              <PurchasesPage />
+            </AppLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/sales"
+        element={
+          <ProtectedRoute>
+            <AppLayout>
+              <SalesPage />
+            </AppLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/invoices"
+        element={
+          <ProtectedRoute>
+            <AppLayout>
+              <InvoicesPage />
+            </AppLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/reports"
+        element={
+          <ProtectedRoute requiredRole="admin">
+            <AppLayout>
+              <ReportsPage />
+            </AppLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/users"
+        element={
+          <ProtectedRoute requiredRole="admin">
+            <AppLayout>
+              <UsersPage />
+            </AppLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/settings"
+        element={
+          <ProtectedRoute>
+            <AppLayout>
+              <SettingsPage />
+            </AppLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 };
+
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
