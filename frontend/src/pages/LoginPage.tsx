@@ -27,7 +27,7 @@ const LoginPage: React.FC = () => {
       setAuthUser(result.user);
 
       toast.success('Đăng nhập thành công!');
-      navigate('/');
+      navigate('/dashboard');
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Đăng nhập thất bại';
       toast.error(message);
