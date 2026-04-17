@@ -17,7 +17,7 @@ import {
 import { Button } from '@/components/ui/button';
 
 const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { user, logout } = useAuth();
+  const { user, logout, isLoading } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -31,7 +31,7 @@ const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   const navItems = useMemo(
     () => [
-      ...(isAdmin ? [{ to: '/', label: 'Bảng điều khiển', icon: LayoutDashboard }] : []),
+      ...(isAdmin ? [{ to: '/dashboard', label: 'Bảng điều khiển', icon: LayoutDashboard }] : []),
       { to: '/products', label: 'Sản phẩm', icon: Package },
       { to: '/purchases', label: 'Nhập hàng', icon: Receipt },
       { to: '/sales', label: 'Bán hàng', icon: ShoppingCart },
@@ -48,19 +48,37 @@ const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   );
 
   useEffect(() => {
-    if (!user) {
+    // Chỉ redirect nếu không còn đang load dữ liệu auth
+    if (!isLoading && !user) {
       navigate('/login');
       return;
     }
 
-    if (isStaff) {
-      const blockedPaths = ['/', '/reports', '/users'];
+    if (user && isStaff) {
+      const blockedPaths = ['/dashboard', '/reports', '/users'];
 
       if (blockedPaths.includes(location.pathname)) {
         navigate('/sales', { replace: true });
       }
     }
-  }, [user, isStaff, location.pathname, navigate]);
+  }, [user, isStaff, isLoading, location.pathname, navigate]);
+
+  // Hiển thị loading khi đang xác minh token
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-slate-100">
+        <div className="flex flex-col items-center gap-3">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-slate-300 border-t-blue-600"></div>
+          <p className="text-slate-600 font-medium">Đang tải...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Nếu sau khi load xong mà không có user, không render gì (useEffect sẽ redirect)
+  if (!user) {
+    return null;
+  }
 
   return (
     <div className="flex h-screen overflow-hidden">

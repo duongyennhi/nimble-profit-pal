@@ -506,21 +506,7 @@ const ProductsPage: React.FC = () => {
               />
             </div>
 
-            <div className="space-y-1">
-              <Label>Danh mục</Label>
-              <select
-                value={form.category_id}
-                onChange={(e) => setForm({ ...form, category_id: e.target.value })}
-                className="w-full rounded-md border px-3 py-2"
-              >
-                <option value="">Chọn danh mục</option>
-                {categories.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+            
 
             <div className="space-y-1">
               <Label>Đơn vị</Label>
