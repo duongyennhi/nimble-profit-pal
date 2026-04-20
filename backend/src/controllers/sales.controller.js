@@ -245,7 +245,7 @@ const createSalesInvoice = async (req, res) => {
     }
 
     const invoiceNo = generateInvoiceNo();
-    const paymentStatus = payment_method === 'bank_transfer' ? 'pending' : 'paid';
+    const paymentStatus = payment_method === 'bank_transfer' ? 'unpaid' : 'paid';
 
     const [invoiceResult] = await connection.query(
       `
@@ -581,7 +581,7 @@ const updateSalesInvoice = async (req, res) => {
       return res.status(400).json({ message: 'Số tiền khách trả không đủ' });
     }
 
-    const paymentStatus = payment_method === 'bank_transfer' ? 'pending' : 'paid';
+    const paymentStatus = payment_method === 'bank_transfer' ? 'unpaid' : 'paid';
 
     await connection.query(
       `

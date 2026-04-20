@@ -22,7 +22,7 @@ const sqlDateTime = (d) => {
 
 const getQuarter = (monthIndex) => Math.floor(monthIndex / 3) + 1;
 
-const getRangeDates = (range = 'week') => {
+const getRangeDates = (range = 'month') => {
   const now = new Date();
   const start = new Date(now);
   const end = new Date(now);
@@ -61,13 +61,10 @@ const getRangeDates = (range = 'week') => {
     end.setMonth(11, 31);
     end.setHours(23, 59, 59, 999);
   } else {
-    const day = start.getDay();
-    const diff = day === 0 ? 6 : day - 1;
-    start.setDate(start.getDate() - diff);
+    start.setDate(1);
     start.setHours(0, 0, 0, 0);
 
-    end.setTime(start.getTime());
-    end.setDate(start.getDate() + 6);
+    end.setMonth(start.getMonth() + 1, 0);
     end.setHours(23, 59, 59, 999);
   }
 
@@ -77,7 +74,7 @@ const getRangeDates = (range = 'week') => {
   };
 };
 
-const buildBuckets = (range = 'week') => {
+const buildBuckets = (range = 'month') => {
   const now = new Date();
   const buckets = [];
 
@@ -176,7 +173,7 @@ const buildBuckets = (range = 'week') => {
   return buckets;
 };
 
-const getBucketKeyFromDate = (value, range = 'week') => {
+const getBucketKeyFromDate = (value, range = 'month') => {
   const d = new Date(value);
 
   if (range === 'quarter' || range === 'year') {
@@ -188,19 +185,20 @@ const getBucketKeyFromDate = (value, range = 'week') => {
 
 const getDashboardSummary = async (req, res) => {
   try {
-    const { range = 'week' } = req.query;
+    const { range = 'month' } = req.query;
     const { start, end } = getRangeDates(range);
 
     const [[salesSummary]] = await pool.query(
       `
       SELECT
         COALESCE(SUM(CASE WHEN payment_status = 'paid' THEN total_amount ELSE 0 END), 0) AS revenue_paid,
-        COALESCE(SUM(CASE WHEN payment_status = 'pending' THEN total_amount ELSE 0 END), 0) AS revenue_pending,
+        COALESCE(SUM(CASE WHEN payment_status = 'unpaid' THEN total_amount ELSE 0 END), 0) AS revenue_pending,
         COUNT(*) AS total_invoices,
         COALESCE(SUM(CASE WHEN payment_status = 'paid' THEN 1 ELSE 0 END), 0) AS paid_invoices,
-        COALESCE(SUM(CASE WHEN payment_status = 'pending' THEN 1 ELSE 0 END), 0) AS pending_invoices
+        COALESCE(SUM(CASE WHEN payment_status = 'unpaid' THEN 1 ELSE 0 END), 0) AS pending_invoices
       FROM sales_invoices
       WHERE invoice_date BETWEEN ? AND ?
+        AND status = 'completed'
       `,
       [start, end]
     );
@@ -225,6 +223,7 @@ const getDashboardSummary = async (req, res) => {
       JOIN sales_invoices si ON si.id = sii.invoice_id
       WHERE si.invoice_date BETWEEN ? AND ?
         AND si.payment_status = 'paid'
+        AND si.status = 'completed'
       `,
       [start, end]
     );
@@ -247,6 +246,7 @@ const getDashboardSummary = async (req, res) => {
       FROM sales_invoices
       WHERE invoice_date BETWEEN ? AND ?
         AND payment_status = 'paid'
+        AND status = 'completed'
       GROUP BY ${salesDateExpr}
       ORDER BY bucket_date ASC
       `,
@@ -280,6 +280,7 @@ const getDashboardSummary = async (req, res) => {
       JOIN sales_invoices si ON si.id = sii.invoice_id
       WHERE si.invoice_date BETWEEN ? AND ?
         AND si.payment_status = 'paid'
+        AND si.status = 'completed'
       GROUP BY ${
         range === 'quarter' || range === 'year'
           ? 'DATE_FORMAT(si.invoice_date, "%Y-%m-01")'
@@ -327,6 +328,7 @@ const getDashboardSummary = async (req, res) => {
       LEFT JOIN payment_methods pm ON pm.id = ip.payment_method_id
       WHERE si.invoice_date BETWEEN ? AND ?
         AND si.payment_status = 'paid'
+        AND si.status = 'completed'
       GROUP BY pm.code, pm.name
       ORDER BY amount DESC
       `,
@@ -346,6 +348,7 @@ const getDashboardSummary = async (req, res) => {
       JOIN products p ON p.id = sii.product_id
       WHERE si.invoice_date BETWEEN ? AND ?
         AND si.payment_status = 'paid'
+        AND si.status = 'completed'
       GROUP BY p.id, p.name, p.unit
       ORDER BY qty_sold DESC, revenue DESC
       LIMIT 5

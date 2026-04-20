@@ -124,6 +124,39 @@ const CustomPieTooltip = ({ active, payload }: any) => {
     </div>
   );
 };
+const StatCard = ({
+  title,
+  value,
+  badge,
+  icon,
+  gradient,
+}: {
+  title: string;
+  value: string | number;
+  badge: string;
+  icon: React.ReactNode;
+  gradient: string;
+}) => (
+  <div className={`rounded-2xl bg-gradient-to-r ${gradient} p-4 text-white shadow-sm`}>
+    <div className="flex items-start justify-between gap-3">
+      <div className="min-w-0 flex-1">
+        <p className="text-xs font-medium uppercase tracking-wide text-white/80">
+          {title}
+        </p>
+        <p className="mt-2 break-words text-base font-bold leading-tight md:text-lg">
+          {value}
+        </p>
+        <span className="mt-2 inline-flex rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide">
+          {badge}
+        </span>
+      </div>
+
+      <div className="shrink-0 rounded-xl bg-white/15 p-2">
+        {icon}
+      </div>
+    </div>
+  </div>
+);
 
 const ReportsPage: React.FC = () => {
   const [range, setRange] = useState<RangeType>('week');
@@ -534,75 +567,45 @@ const ReportsPage: React.FC = () => {
       ) : (
         <>
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-            <Card>
-              <CardContent className="flex items-center gap-4 p-5">
-                <div className="rounded-xl bg-muted p-3">
-                  <Wallet className="h-6 w-6 text-primary" />
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Doanh thu</p>
-                  <p className="text-2xl font-bold">
-                    {formatCurrency(report.summary.revenue_paid)}
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+            <StatCard
+              title="Tổng doanh thu"
+              value={formatCurrency(report.summary.revenue_paid)}
+              badge="Đã thanh toán"
+              icon={<Wallet className="h-4 w-4 text-white" />}
+              gradient="from-violet-600 to-indigo-500"
+            />
 
-            <Card>
-              <CardContent className="flex items-center gap-4 p-5">
-                <div className="rounded-xl bg-muted p-3">
-                  <Clock3 className="h-6 w-6 text-amber-500" />
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Chờ xác nhận chuyển khoản</p>
-                  <p className="text-2xl font-bold">
-                    {formatCurrency(report.summary.revenue_pending)}
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+            <StatCard
+              title="Chờ xác nhận CK"
+              value={formatCurrency(report.summary.revenue_pending)}
+              badge="Pending"
+              icon={<Clock3 className="h-4 w-4 text-white" />}
+              gradient="from-blue-600 to-cyan-500"
+            />
 
-            <Card>
-              <CardContent className="flex items-center gap-4 p-5">
-                <div className="rounded-xl bg-muted p-3">
-                  <ShoppingCart className="h-6 w-6 text-orange-600" />
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Chi nhập hàng</p>
-                  <p className="text-2xl font-bold">
-                    {formatCurrency(report.summary.total_cost)}
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+            <StatCard
+              title="Chi nhập hàng"
+              value={formatCurrency(report.summary.total_cost)}
+              badge="Chi phí"
+              icon={<ShoppingCart className="h-4 w-4 text-white" />}
+              gradient="from-sky-600 to-cyan-500"
+            />
 
-            <Card>
-              <CardContent className="flex items-center gap-4 p-5">
-                <div className="rounded-xl bg-muted p-3">
-                  <TrendingUp className="h-6 w-6 text-green-600" />
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Chênh lệch thu chi</p>
-                  <p className="text-2xl font-bold">
-                    {formatCurrency(report.summary.cashflow_profit)}
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+            <StatCard
+              title="Chênh lệch thu chi"
+              value={formatCurrency(report.summary.cashflow_profit)}
+              badge="Thu chi"
+              icon={<TrendingUp className="h-4 w-4 text-white" />}
+              gradient="from-orange-500 to-red-500"
+            />
 
-            <Card>
-              <CardContent className="flex items-center gap-4 p-5">
-                <div className="rounded-xl bg-muted p-3">
-                  <Receipt className="h-6 w-6 text-sky-500" />
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Hóa đơn</p>
-                  <p className="text-2xl font-bold">
-                    {report.summary.total_invoices}
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+            <StatCard
+              title="Hóa đơn"
+              value={report.summary.total_invoices}
+              badge="Số lượng"
+              icon={<Receipt className="h-4 w-4 text-white" />}
+              gradient="from-emerald-600 to-green-500"
+            />
           </div>
 
           {report.low_stock_products.length > 0 && (

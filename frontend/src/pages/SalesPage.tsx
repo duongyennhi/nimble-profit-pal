@@ -231,7 +231,7 @@ const SalesPage: React.FC = () => {
         discount_amount: Number(discount || 0),
         payment_method: paymentMethod,
         customer_paid:
-          paymentMethod === 'cash' ? Number(customerPaid || 0) : total,
+          paymentMethod === 'cash' ? Number(customerPaid || 0) : 0,
         change_amount: paymentMethod === 'cash' ? change : 0,
         lines: lines.map((line) => ({
           product_id: Number(line.productId),
@@ -480,10 +480,16 @@ const SalesPage: React.FC = () => {
                 <TabsContent value="bank_transfer" className="mt-3">
                   <Card className="bg-muted">
                     <CardContent className="p-4 text-center">
-                      <QrCode className="h-20 w-20 mx-auto mb-2 text-muted-foreground" />
+                      <img
+                        src="/QR.png"
+                        alt="QR chuyển khoản"
+                        className="mx-auto mb-3 h-48 w-48 rounded-lg border bg-white object-contain p-2"
+                      />
+
                       <p className="text-sm text-muted-foreground">
-                        Hiển thị mã QR chuyển khoản tại đây
+                        TRAN KIEU OANH
                       </p>
+
                       <p className="font-bold mt-2">{formatCurrency(total)}</p>
                     </CardContent>
                   </Card>

@@ -361,6 +361,10 @@ INSERT INTO products (
     1, 0, 'active'
 );
 
+SET NAMES utf8mb4;
+
+UPDATE roles SET name = 'Quản trị' WHERE code = 'admin';
+UPDATE roles SET name = 'Nhân viên' WHERE code = 'staff';
 -- GHI CHÚ:
 -- 1. Tạo hash bcrypt thật cho admin/staff rồi mới insert users.
 -- 2. Admin toàn quyền, staff chỉ thao tác chức năng cơ bản.

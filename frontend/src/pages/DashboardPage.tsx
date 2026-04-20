@@ -109,7 +109,39 @@ const CustomPieTooltip = ({ active, payload }: any) => {
     </div>
   );
 };
+const StatCard = ({
+  title,
+  value,
+  badge,
+  icon,
+  gradient,
+}: {
+  title: string;
+  value: string | number;
+  badge: string;
+  icon: React.ReactNode;
+  gradient: string;
+}) => (
+  <div className={`rounded-2xl bg-gradient-to-r ${gradient} p-4 text-white shadow-sm`}>
+    <div className="flex items-start justify-between gap-3">
+      <div className="min-w-0 flex-1">
+        <p className="text-xs font-medium uppercase tracking-wide text-white/80">
+          {title}
+        </p>
+        <p className="mt-2 break-words text-base font-bold leading-tight md:text-lg">
+          {value}
+        </p>
+        <span className="mt-2 inline-flex rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide">
+          {badge}
+        </span>
+      </div>
 
+      <div className="shrink-0 rounded-xl bg-white/15 p-2">
+        {icon}
+      </div>
+    </div>
+  </div>
+);
 const DashboardPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [todayReport, setTodayReport] = useState<DashboardReportResponse | null>(null);
@@ -171,28 +203,32 @@ const DashboardPage: React.FC = () => {
 
     return [
       {
-        title: 'Doanh thu hôm nay',
+        title: 'Tổng doanh thu',
         value: formatCurrency(Number(todayReport.summary.revenue_paid || 0)),
-        icon: DollarSign,
-        color: 'text-primary',
+        badge: 'Hôm nay',
+        icon: <DollarSign className="h-4 w-4 text-white" />,
+        gradient: 'from-violet-600 to-indigo-500',
       },
       {
-        title: 'Doanh thu tuần này',
+        title: 'Doanh thu tuần',
         value: formatCurrency(Number(weekReport.summary.revenue_paid || 0)),
-        icon: Wallet,
-        color: 'text-blue-600',
+        badge: '7 ngày',
+        icon: <Wallet className="h-4 w-4 text-white" />,
+        gradient: 'from-blue-600 to-cyan-500',
       },
       {
         title: 'Chi nhập hôm nay',
         value: formatCurrency(Number(todayReport.summary.total_cost || 0)),
-        icon: ShoppingCart,
-        color: 'text-orange-600',
+        badge: 'Chi phí',
+        icon: <ShoppingCart className="h-4 w-4 text-white" />,
+        gradient: 'from-sky-600 to-cyan-500',
       },
       {
-        title: 'Chênh lệch thu chi hôm nay',
+        title: 'Chênh lệch thu chi',
         value: formatCurrency(Number(todayReport.summary.cashflow_profit || 0)),
-        icon: FileText,
-        color: 'text-green-600',
+        badge: 'Hôm nay',
+        icon: <FileText className="h-4 w-4 text-white" />,
+        gradient: 'from-orange-500 to-red-500',
       },
     ];
   }, [todayReport, weekReport]);
@@ -222,22 +258,16 @@ const DashboardPage: React.FC = () => {
       <h1 className="text-2xl font-bold">Bảng điều khiển</h1>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {summaryCards.map((card) => {
-          const Icon = card.icon;
-          return (
-            <Card key={card.title}>
-              <CardContent className="flex items-center gap-4 p-4">
-                <div className={`rounded-lg bg-muted p-3 ${card.color}`}>
-                  <Icon className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">{card.title}</p>
-                  <p className="text-xl font-bold">{card.value}</p>
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })}
+        {summaryCards.map((card) => (
+          <StatCard
+            key={card.title}
+            title={card.title}
+            value={card.value}
+            badge={card.badge}
+            icon={card.icon}
+            gradient={card.gradient}
+          />
+        ))}
       </div>
 
       {weekReport.low_stock_products.length > 0 && (
@@ -267,7 +297,7 @@ const DashboardPage: React.FC = () => {
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <Card className="lg:col-span-2">
           <CardHeader>
-            <CardTitle className="text-base">Doanh thu & Chi nhập tuần này</CardTitle>
+            <CardTitle className="text-base font-semibold">Doanh thu & Chi nhập tuần này</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -315,7 +345,7 @@ const DashboardPage: React.FC = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Phương thức thanh toán</CardTitle>
+            <CardTitle className="text-base font-semibold">Phương thức thanh toán</CardTitle>
           </CardHeader>
           <CardContent>
             {paymentPieData.length === 0 ? (

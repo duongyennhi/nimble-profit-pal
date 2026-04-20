@@ -9,4 +9,5 @@ router.get('/:id', authMiddleware, salesController.getSalesInvoiceById);
 router.post('/', authMiddleware, salesController.createSalesInvoice);
 router.put('/:id', authMiddleware, salesController.updateSalesInvoice);
 router.patch('/:id/confirm-payment', authMiddleware, salesController.confirmSalesInvoicePayment);
+
 module.exports = router;

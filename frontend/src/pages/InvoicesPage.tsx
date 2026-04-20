@@ -166,8 +166,10 @@ const paymentStatusLabel = (status?: string | null) => {
   switch (status) {
     case 'paid':
       return 'Đã thanh toán';
-    case 'pending':
+    case 'unpaid':
       return 'Chờ xác nhận';
+    case 'partial':
+      return 'Thanh toán một phần';
     default:
       return 'Không rõ';
   }
@@ -453,7 +455,7 @@ const InvoicesPage: React.FC = () => {
         note: editNote?.trim() || '',
         discount_amount: Number(editDiscount || 0),
         payment_method: editPaymentMethod,
-        customer_paid: editPaymentMethod === 'cash' ? Number(editCustomerPaid || 0) : editTotal,
+        customer_paid: editPaymentMethod === 'cash' ? Number(editCustomerPaid || 0) : 0,
         change_amount: editPaymentMethod === 'cash' ? editChange : 0,
         lines: editLines.map((line) => ({
           product_id: Number(line.product_id),
@@ -777,7 +779,7 @@ const InvoicesPage: React.FC = () => {
                           </Button>
 
                           {invoice.payment_method_code === 'bank_qr' &&
-                            invoice.payment_status === 'pending' && (
+                            invoice.payment_status === 'unpaid' && (
                               <Button
                                 variant="outline"
                                 size="sm"
@@ -969,7 +971,7 @@ const InvoicesPage: React.FC = () => {
                 </Button>
 
                 {selectedInvoice.payment_method_code === 'bank_qr' &&
-                  selectedInvoice.payment_status === 'pending' && (
+                  selectedInvoice.payment_status === 'unpaid' && (
                     <Button
                       variant="outline"
                       onClick={() => handleConfirmPayment(selectedInvoice.id)}
